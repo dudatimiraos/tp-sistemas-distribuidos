@@ -1,0 +1,98 @@
+version: "3"
+
+services:
+  time-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    container_name: time-server
+    networks:
+      time-network:
+        ipv4_address: 192.168.10.6
+    ports:
+      - "8000:8000"
+    tty: true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  client1:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: client1
+    networks:
+      time-network:
+        ipv4_address: 192.168.10.7
+    depends_on:
+      - time-server
+    command: python time_client.py 1
+    tty: true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  client2:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: client2
+    networks:
+      time-network:
+        ipv4_address: 192.168.10.8
+    depends_on:
+      - time-server
+    command: python time_client.py 2
+    tty: true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  client3:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: client3
+    networks:
+      time-network:
+        ipv4_address: 192.168.10.9
+    depends_on:
+      - time-server
+    command: python time_client.py 3
+    tty: true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  client4:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: client4
+    networks:
+      time-network:
+        ipv4_address: 192.168.10.10
+    depends_on:
+      - time-server
+    command: python time_client.py 4
+    tty: true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  time-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.10.0/24
